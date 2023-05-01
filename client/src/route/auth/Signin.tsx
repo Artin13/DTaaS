@@ -20,10 +20,9 @@ import Container from '@mui/material/Container';
 import { createTheme, Theme, ThemeProvider } from '@mui/material/styles';
 
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 
 import Footer from '../../page/Footer';
-
-import { useAuth } from '../../components/AuthContext';
 
 // const drawerWidth = 240;
 
@@ -51,12 +50,12 @@ import { useAuth } from '../../components/AuthContext';
 const theme: Theme = createTheme();
 
 function SignIn() {
-  const { logIn } = useAuth();
+  const auth  = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    logIn();
+    auth.signinRedirect();
     navigate('/library');
   };
 

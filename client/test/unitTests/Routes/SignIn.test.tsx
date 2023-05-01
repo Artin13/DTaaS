@@ -1,24 +1,35 @@
 import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import SignIn from 'route/auth/Signin';
-import AuthContext from 'components/AuthContext';
+import { useAuth } from 'react-oidc-context';
+
+jest.mock('react-oidc-context');
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
 describe('SignIn', () => {
+  const signinRedirect = jest.fn();
+
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({
+      signinRedirect,
+    });
+
+    (useNavigate as jest.Mock).mockReturnValue(jest.fn());
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the SignIn form', () => {
     render(
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      <AuthContext.Provider
-        value={{
-          isLoggedIn: false,
-          logIn: () => undefined,
-          logOut: () => undefined,
-        }}
-      >
-        <Router>
-          <SignIn />
-        </Router>
-      </AuthContext.Provider>
+      <MemoryRouter>
+        <SignIn />
+      </MemoryRouter>
     );
     expect(screen.getByLabelText(/Email Address/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
@@ -27,5 +38,18 @@ describe('SignIn', () => {
     ).toBeInTheDocument();
   });
 
-  // Add more tests for form submission and redirection as needed
+  it('handles form submission', () => {
+    render(
+      <MemoryRouter>
+        <SignIn />
+      </MemoryRouter>
+    );
+
+    const signInButton = screen.getByRole('button', { name: /Sign In/i });
+    fireEvent.submit(signInButton);
+
+    expect(signinRedirect).toHaveBeenCalled();
+  });
 });
+
+
