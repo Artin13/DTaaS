@@ -26,7 +26,7 @@ const theme: Theme = createTheme();
 
 function SignIn() {
   const dispatch = useDispatch();
-  const auth  = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   const [localUsername, setLocalUsername] = React.useState<string>('');
 
