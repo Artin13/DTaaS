@@ -18,14 +18,15 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setUserName } from 'store/auth.slice';
 
+import { useAuth } from 'react-oidc-context';
+
 import Footer from '../../page/Footer';
-import { useAuth } from '../../components/AuthContext';
 
 const theme: Theme = createTheme();
 
 function SignIn() {
   const dispatch = useDispatch();
-  const { logIn } = useAuth();
+  const auth  = useAuth();
   const navigate = useNavigate();
   const [localUsername, setLocalUsername] = React.useState<string>('');
 
@@ -39,7 +40,7 @@ function SignIn() {
     event.preventDefault();
     if (!localUsername) return;
     dispatch(setUserName(localUsername));
-    logIn();
+    auth.signinRedirect();
     navigate('/library');
   };
 
