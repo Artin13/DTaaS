@@ -1,34 +1,17 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { setUserName } from 'store/auth.slice';
 
-import { useAuth } from 'components/AuthContext';
+import { useAuth } from 'react-oidc-context';
 import Button from '@mui/material/Button';
 
 function SignIn() {
-  const dispatch = useDispatch();
-  const { logIn } = useAuth();
-  const navigate = useNavigate();
-  const [localUsername, setLocalUsername] = React.useState<string>('');
-
-  const handleUsernameChange = (input: string) => {
-    if (!input.includes(' ')) {
-      setLocalUsername(input);
-    }
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!localUsername) return;
-    dispatch(setUserName(localUsername));
-    logIn();
-    navigate('/library');
+  const auth = useAuth();
+  
+  const startAuthProcess = () => {
+    auth.signinRedirect();
   };
 
   return (
@@ -46,27 +29,15 @@ function SignIn() {
       <Typography component="h1" variant="h5">
         Sign in
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <TextField
-          margin="normal"
-          value={localUsername}
-          onChange={(event) => handleUsernameChange(event.target.value)}
-          required
-          fullWidth
-          id="username"
-          label="Username"
-          name="username"
-          autoFocus
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
-          Sign In
-        </Button>
-      </Box>
+      <Button
+      onClick={startAuthProcess}
+      fullWidth
+      variant="contained"
+      sx={{ mt: 3, mb: 2 }}
+      startIcon={<img src={"https://seeklogo.com/images/G/gitlab-logo-757620E430-seeklogo.com.png"} alt="GitLab" />} // place your GitLab logo here
+    >
+      Sign In with GitLab
+    </Button>
     </Box>
   );
 }
