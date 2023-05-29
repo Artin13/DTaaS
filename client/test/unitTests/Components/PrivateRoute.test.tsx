@@ -30,7 +30,16 @@ type AuthState = {
 };
 
 const setupTest = (authState: AuthState) => {
-  (useAuth as jest.Mock).mockReturnValue(authState);
+  // Mock the user object within auth
+  const authStateWithUser = {
+    ...authState,
+    user: {
+      profile: { profile: 'https://example.com/username' },
+      access_token: 'mocked_token',
+    },
+  };
+
+  (useAuth as jest.Mock).mockReturnValue(authStateWithUser);
 
   renderWithRouter(
     <PrivateRoute>
