@@ -2,8 +2,7 @@ import * as React from 'react';
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { useDispatch } from 'react-redux';
-import { setUserName } from 'store/auth.slice';
+import useUserData from 'store/UserAccess';
 import WaitNavigateAndReload from './WaitAndNavigate';
 
 interface PrivateRouteProps {
@@ -12,7 +11,7 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const auth = useAuth();
-  const dispatch = useDispatch();
+  const { actions } = useUserData();
   const [localUsername, setLocalUsername] = React.useState<string>('');
   const [isInitialFetchDone, setIsInitialFetchDone] = React.useState(false);
   let returnJSX;
@@ -21,9 +20,14 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     if (auth.isAuthenticated && !isInitialFetchDone) {
       if (auth.user !== null && auth.user !== undefined) {
         const profileUrl = auth.user.profile.profile ?? '';
-        const username = profileUrl.split('/').filter(Boolean).pop();
+        let username = profileUrl.split('/').filter(Boolean).pop();
+        if (username && username.length > 0) {
+            username = `${  username}`;
+            // eslint-disable-next-line no-console
+            console.log(username)
+        }
         setLocalUsername(username ?? '');
-        dispatch(setUserName(localUsername));
+        actions.setUser(localUsername);
         localStorage.setItem('username', username ?? '');
         localStorage.setItem('access_token', auth.user.access_token);
         sessionStorage.setItem('username', username ?? '');
