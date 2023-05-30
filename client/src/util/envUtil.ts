@@ -42,7 +42,7 @@ function useAppURL(): string {
     baseUrl = `${baseUrl}/${basename}`;
   }
 
-  return baseUrl;
+  return cleanURL(baseUrl);
 }
 
 export interface KeyLinkPair {

@@ -57,8 +57,9 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: `/${useURLbasename()}` || '/',
+    basename: useURLbasename() ? `/${useURLbasename()}` : '/',
   }
+  
 );
 
 const root = document.getElementById('root');
