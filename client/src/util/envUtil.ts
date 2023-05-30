@@ -35,7 +35,14 @@ export function useURLforLIB(): string {
 }
 
 function useAppURL(): string {
-  return `${cleanURL(window.env.REACT_APP_URL)}/${useURLbasename()}`;
+  let baseUrl = cleanURL(window.env.REACT_APP_URL);
+  const basename = useURLbasename();
+  
+  if (basename !== '') {
+    baseUrl = `${baseUrl}/${basename}`;
+  }
+
+  return baseUrl;
 }
 
 export interface KeyLinkPair {
