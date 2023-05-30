@@ -11,7 +11,7 @@ import DigitalTwins from './route/digitaltwins/DigitalTwins';
 import SignIn from './route/auth/Signin';
 import Account from './route/auth/Account';
 
-import PrivateRoute from '../src/components/PrivateRoute';
+import PrivateRoute from '../src/route/auth/PrivateRoute';
 
 const router = createBrowserRouter(
   [
